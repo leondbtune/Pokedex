@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct PokedexApp: App {
+    @StateObject var viewModel = PokedexViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            PokedexView(viewModel: PokedexViewModel())
+            PokedexView(viewModel: viewModel)
         }
     }
 }

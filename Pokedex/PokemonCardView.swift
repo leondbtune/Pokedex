@@ -29,46 +29,61 @@ let typeColors: [String: Color] = [
 ]
 
 struct PokemonCardView: View {
-    let pokemon: Pokemon
+    let pokemon: BasicPokemon
+    @State private var pokemonDetails: Pokemon?
+    @ObservedObject var viewModel: PokedexViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
-            AsyncImage(url: URL(string: pokemon.imageURL)) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 100)
-            } placeholder: {
-                ProgressView()
-            }
-
-            Text(pokemon.name.capitalized)
-                .font(.headline)
-                .padding(.top, 5)
-                .lineLimit(1)
-                .foregroundColor(.black)
-                .minimumScaleFactor(0.5)
-
-            HStack {
-                ForEach(pokemon.types, id: \.self) { type in
-                    Text(type.capitalized)
-                        .font(.caption2)
-                        .padding(4)
-                        .background(typeColors[type, default: Color(.systemGray).opacity(0.1)])
-                        .cornerRadius(8)
-                        .minimumScaleFactor(0.5)
-                        .lineLimit(1)
-                        .foregroundColor(.black)
+            if let details = pokemonDetails, let imageUrl = pokemonDetails?.sprites.frontDefault {
+                if let url = URL(string: imageUrl) {
+                    AsyncImage(url: url) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 100)
+                    } placeholder: {
+                        ProgressView()
+                            .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+                    }
                 }
+
+                Text(details.name.capitalized)
+                    .font(.headline)
+                    .padding(.top, 5)
+                    .lineLimit(1)
+                    .foregroundColor(.black)
+                    .minimumScaleFactor(0.5)
+
+                HStack {
+                    ForEach(details.types, id: \.type.name) { typeElement in
+                        Text(typeElement.type.name.capitalized)
+                            .font(.caption2)
+                            .padding(4)
+                            .background(typeColors[typeElement.type.name, default: Color(.systemGray).opacity(0.1)])
+                            .cornerRadius(8)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                            .foregroundColor(.black)
+                    }
+                }
+            } else {
+                // Placeholder while fetching
+                ProgressView()
+                    .onAppear {
+                        fetchDetails()
+                    }
             }
         }
         .padding()
-        .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.gray]), startPoint: /*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/, endPoint: /*@START_MENU_TOKEN@*/.trailing/*@END_MENU_TOKEN@*/))
+        .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.gray]), startPoint: .leading, endPoint: .trailing))
         .cornerRadius(12)
         .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 5)
     }
-}
-
-#Preview {
-    PokemonCardView(pokemon: Pokemon(id: 1, name: "bulbasaur", types: ["grass", "poison"], imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"))
+    
+    private func fetchDetails() {
+        viewModel.fetchPokemonDetails(for: pokemon) { details in
+            pokemonDetails = details
+        }
+    }
 }

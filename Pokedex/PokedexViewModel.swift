@@ -7,27 +7,38 @@
 import Foundation
 
 class PokedexViewModel: ObservableObject {
-    @Published var allPokemon: [Pokemon] = []
-    @Published var ownedPokemon: [OwnedPokemon] = []
+    @Published var allPokemon: [BasicPokemon] = []
     @Published var searchText: String = "" {
             didSet {
                 searchPokemon()
             }
         }
-    @Published var searchResults: [Pokemon] = []
+    @Published var searchResults: [BasicPokemon] = []
+    private var detailedPokemonCache: [String: Pokemon] = [:]
     
     private let apiService = PokeAPIService()
 
     func fetchAllPokemon() {
-        apiService.fetchPokemonList { [weak self] pokemonList in
-                    self?.allPokemon = pokemonList
-                    self?.searchResults = pokemonList
+        apiService.fetchPokemonList { [weak self] pokemons in
+                    self?.allPokemon = pokemons
+                    self?.searchResults = pokemons
+                }
+        
+    }
+    
+    func fetchPokemonDetails(for basicPokemon: BasicPokemon, completion: @escaping (Pokemon) -> Void) {
+        if let cachedPokemon = detailedPokemonCache[basicPokemon.name] {
+                    completion(cachedPokemon)
+                } else {
+                    apiService.fetchPokemonDetails(url: basicPokemon.url) { pokemonDetails in
+                        self.detailedPokemonCache[pokemonDetails.name] = pokemonDetails
+                        completion(pokemonDetails)
+                    }
                 }
     }
 
     func addPokemonToOwned(pokemon: Pokemon, nickname: String?, dateCaught: Date, level: Int) {
-        let newPokemon = OwnedPokemon(id: pokemon.id, pokemon: pokemon, nickname: nickname, dateCaught: dateCaught, level: level)
-        ownedPokemon.append(newPokemon)
+        // TODO
     }
 
     func searchPokemon() {
@@ -38,8 +49,4 @@ class PokedexViewModel: ObservableObject {
                 }
     }
 
-    func findCounters(for type: String) -> [Pokemon] {
-        // TODO
-        return []
-    }
 }
