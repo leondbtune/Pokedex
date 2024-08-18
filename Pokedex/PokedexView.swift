@@ -47,8 +47,8 @@ struct PokemonDetailView: View {
 
     var body: some View {
         VStack {
-            Button("Add to Owned") {
-                // TODO
+            Button(viewModel.isPokemonOwned(pokemon) ? "Remove from owned" : "Add to owned") {
+                viewModel.togglePokemonOwnership(pokemon)
             }
             PokemonCardView(pokemon: pokemon, viewModel: viewModel)
             

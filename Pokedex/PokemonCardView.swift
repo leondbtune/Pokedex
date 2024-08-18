@@ -32,6 +32,8 @@ struct PokemonCardView: View {
     let pokemon: BasicPokemon
     @State private var pokemonDetails: Pokemon?
     @ObservedObject var viewModel: PokedexViewModel
+    
+    private let ownedCardColor = LinearGradient(gradient: Gradient(colors: [Color.white, Color.green]), startPoint: .leading, endPoint: .trailing)
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -76,7 +78,7 @@ struct PokemonCardView: View {
             }
         }
         .padding()
-        .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.gray]), startPoint: .leading, endPoint: .trailing))
+        .background(viewModel.isPokemonOwned(pokemon) ? ownedCardColor : LinearGradient(gradient: Gradient(colors: [Color.white, Color.gray]), startPoint: .leading, endPoint: .trailing))
         .cornerRadius(12)
         .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 5)
     }

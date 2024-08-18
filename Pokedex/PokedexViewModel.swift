@@ -17,6 +17,17 @@ class PokedexViewModel: ObservableObject {
     private var detailedPokemonCache: [String: Pokemon] = [:]
     
     private let apiService = PokeAPIService()
+    private let ownedPokemonKey = "ownedPokemon"
+    
+    init() {
+            loadOwnedPokemon()
+        }
+    
+    @Published var ownedPokemonNames: Set<String> = [] {
+        didSet {
+            saveOwnedPokemon()
+        }
+    }
 
     func fetchAllPokemon() {
         apiService.fetchPokemonList { [weak self] pokemons in
@@ -37,10 +48,6 @@ class PokedexViewModel: ObservableObject {
                 }
     }
 
-    func addPokemonToOwned(pokemon: Pokemon, nickname: String?, dateCaught: Date, level: Int) {
-        // TODO
-    }
-
     func searchPokemon() {
         if searchText.isEmpty {
                     searchResults = allPokemon
@@ -48,5 +55,27 @@ class PokedexViewModel: ObservableObject {
                     searchResults = allPokemon.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
                 }
     }
+    
+    func isPokemonOwned(_ pokemon: BasicPokemon) -> Bool {
+            ownedPokemonNames.contains(pokemon.name)
+        }
+        
+        func togglePokemonOwnership(_ pokemon: BasicPokemon) {
+            if isPokemonOwned(pokemon) {
+                ownedPokemonNames.remove(pokemon.name)
+            } else {
+                ownedPokemonNames.insert(pokemon.name)
+            }
+        }
+    private func saveOwnedPokemon() {
+            let ownedPokemonArray = Array(ownedPokemonNames)
+            UserDefaults.standard.set(ownedPokemonArray, forKey: ownedPokemonKey)
+        }
+
+        private func loadOwnedPokemon() {
+            if let ownedPokemonArray = UserDefaults.standard.stringArray(forKey: ownedPokemonKey) {
+                ownedPokemonNames = Set(ownedPokemonArray)
+            }
+        }
 
 }
