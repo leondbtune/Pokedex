@@ -8,24 +8,24 @@
 import SwiftUI
 
 let typeColors: [String: Color] = [
-    "Normal": Color(.systemGray),
-    "Fire": Color(.systemRed),
-    "Water": Color(.systemBlue),
-    "Electric": Color(.systemYellow),
-    "Grass": Color(.systemGreen),
-    "Ice": Color(.systemTeal),
-    "Fighting": Color(.systemOrange),
-    "Poison": Color(.systemPurple),
-    "Ground": Color(.brown),
-    "Flying": Color(.systemIndigo),
-    "Psychic": Color(.systemPink),
-    "Bug": Color(.systemGreen),
-    "Rock": Color(.systemBrown),
-    "Ghost": Color(.systemIndigo),
-    "Dragon": Color(.systemPurple),
-    "Dark": Color(.systemGray2),
-    "Steel": Color(.systemGray3),
-    "Fairy": Color(.systemPink)
+    "normal": Color(.systemGray),
+    "fire": Color(.systemRed),
+    "water": Color(.systemBlue),
+    "electric": Color(.systemYellow),
+    "grass": Color(.systemGreen),
+    "ice": Color(.systemTeal),
+    "fighting": Color(.systemOrange),
+    "poison": Color(.systemPurple),
+    "ground": Color(.brown),
+    "flying": Color(.systemIndigo),
+    "psychic": Color(.systemPink),
+    "bug": Color(.systemGreen),
+    "rock": Color(.systemBrown),
+    "ghost": Color(.systemIndigo),
+    "dragon": Color(.systemPurple),
+    "dark": Color(.systemGray2),
+    "steel": Color(.systemGray3),
+    "fairy": Color(.systemPink)
 ]
 
 struct PokemonCardView: View {
@@ -70,7 +70,6 @@ struct PokemonCardView: View {
                     }
                 }
             } else {
-                // Placeholder while fetching
                 ProgressView()
                     .onAppear {
                         fetchDetails()
