@@ -20,65 +20,22 @@ struct PokemonListResponse: Codable {
 struct Pokemon: Codable {
     let id: Int?
     let name: String
-    let height: Int?
-    let order: Int?
-    let weight: Int?
-    let abilities: [Ability]?
     let forms: [Species]?
-    let locationAreaEncounters: String?
-    let moves: [Move]?
     let species: Species
     let sprites: Sprites
-    let stats: [Stat]?
     let types: [TypeElement]
-    let pastTypes: [PastType]?
-    let cries: Cries?
 }
 
-struct Ability: Codable {
-    let slot: Int?
-    let ability: Species?
-}
 
 struct Species: Codable {
     let name: String
     let url: String?
 }
 
-struct HeldItem: Codable {
-    let item: Species?
-    let versionDetails: [VersionDetail]?
-}
-
-struct VersionDetail: Codable {
-    let rarity: Int?
-    let version: Species?
-}
-
-struct Move: Codable {
-    let move: Species?
-    let versionGroupDetails: [VersionGroupDetail]?
-}
-
-struct VersionGroupDetail: Codable {
-    let levelLearnedAt: Int?
-    let versionGroup: Species?
-    let moveLearnMethod: Species?
-}
-
-struct PastType: Codable {
-    let generation: Species
-    let types: [TypeElement]?
-}
 
 struct TypeElement: Codable {
     let slot: Int?
     let type: Species
-}
-
-struct Cries: Codable {
-    let latest: String?
-    let legacy: String?
 }
 
 struct Sprites: Codable {
@@ -138,21 +95,4 @@ struct Showdown: Codable {
     let frontFemale: String?
     let frontShiny: String?
     let frontShinyFemale: String?
-}
-
-struct Stat: Codable {
-    let baseStat: Int?
-    let effort: Int?
-    let stat: Species?
-
-    enum CodingKeys: String, CodingKey {
-        case baseStat = "base_stat"
-        case effort, stat
-    }
-}
-
-enum PokeAPIError: Error {
-    case invalidURL
-    case invalidResponse
-    case invalidData
 }
